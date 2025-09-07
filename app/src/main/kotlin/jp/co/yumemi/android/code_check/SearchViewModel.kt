@@ -37,6 +37,7 @@ class SearchViewModel : ViewModel() {
                 _searchUiState.value = SearchUiState.Error
                 return@launch
             }
+            val fetchDate = Date()
             val items = responseList.map { responseItem ->
                 Item(
                     name = responseItem.name,
@@ -46,9 +47,10 @@ class SearchViewModel : ViewModel() {
                     watchersCount = responseItem.watchersCount,
                     forksCount = responseItem.forksCount,
                     openIssuesCount = responseItem.openIssuesCount,
+                    fetchDate = fetchDate
                 )
             }
-            _searchUiState.value = SearchUiState.Results(items, Date())
+            _searchUiState.value = SearchUiState.Results(items)
         }
     }
 
@@ -67,8 +69,7 @@ sealed interface SearchUiState {
     object Loading : SearchUiState
 
     data class Results(
-        val itemList: List<Item>,
-        val searchDate: Date
+        val itemList: List<Item>
     ) : SearchUiState
 
     object Error: SearchUiState

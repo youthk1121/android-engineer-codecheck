@@ -23,8 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.databinding.FragmentSearchBinding
 import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
 import kotlinx.coroutines.launch
-import okio.IOException
-import java.util.Date
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
@@ -39,11 +37,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
         val adapter = CustomAdapter(object : CustomAdapter.OnItemClickListener {
             override fun itemClick(item: Item) {
-                val uiState = viewModel.searchUiState.value
-                if (uiState !is SearchUiState.Results) {
-                    return
-                }
-                gotoRepositoryFragment(item, uiState.searchDate)
+                gotoRepositoryFragment(item)
             }
         })
 
@@ -93,9 +87,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
-    fun gotoRepositoryFragment(item: Item, searchDate: Date) {
+    fun gotoRepositoryFragment(item: Item) {
         val action = SearchFragmentDirections
-            .actionRepositoriesFragmentToRepositoryFragment(item = item, searchDate = searchDate)
+            .actionRepositoriesFragmentToRepositoryFragment(item = item)
         findNavController().navigate(action)
     }
 }

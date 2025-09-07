@@ -18,7 +18,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("検索した日時", args.searchDate.toString())
+        Log.d("検索した日時", args.item.fetchDate.toString())
 
         val binding = FragmentDetailBinding.bind(view)
 

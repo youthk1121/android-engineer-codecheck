@@ -23,10 +23,6 @@
         <argument
             android:name="item"
             app:argType="jp.co.yumemi.android.code_check.Item" />
-        <argument
-            android:name="searchDate"
-            app:argType="java.util.Date"
-            app:nullable="true" />
     </fragment>
 
 </navigation>
