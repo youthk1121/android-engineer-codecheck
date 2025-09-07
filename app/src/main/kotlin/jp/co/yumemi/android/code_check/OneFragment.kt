@@ -11,7 +11,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
 
 class OneFragment : Fragment(R.layout.fragment_one) {
@@ -87,11 +91,11 @@ class CustomAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        (holder.itemView.findViewById<View>(R.id.repositoryNameView) as TextView).text =
-            item.name
-
-        holder.itemView.setOnClickListener {
-            itemClickListener.itemClick(item)
+        holder.itemView.findViewById<TextView>(R.id.repositoryNameView).apply {
+            text = item.name
+            setOnClickListener {
+                itemClickListener.itemClick(item)
+            }
         }
     }
 }
