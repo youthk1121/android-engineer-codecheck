@@ -3,14 +3,13 @@
  */
 package jp.co.yumemi.android.code_check
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import jp.co.yumemi.android.code_check.repository.SearchRepository
 
 /**
  * OneFragment で使う
  */
-class OneViewModel(application: Application) : AndroidViewModel(application) {
+class OneViewModel : ViewModel() {
 
     private val searchRepository = SearchRepository()
 
@@ -20,10 +19,7 @@ class OneViewModel(application: Application) : AndroidViewModel(application) {
             Item(
                 name = responseItem.name,
                 ownerIconUrl = responseItem.ownerIconUrl,
-                language = getApplication<Application>().getString(
-                    R.string.written_language,
-                    responseItem.language
-                ),
+                language = responseItem.language,
                 stargazersCount = responseItem.stargazersCount,
                 watchersCount = responseItem.watchersCount,
                 forksCount = responseItem.forksCount,

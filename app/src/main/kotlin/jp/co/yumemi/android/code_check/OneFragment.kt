@@ -36,7 +36,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
 
         val binding = FragmentOneBinding.bind(view)
 
-        val viewModel = OneViewModel(requireActivity().application)
+        val viewModel = OneViewModel()
 
         val layoutManager = LinearLayoutManager(context)
         val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)

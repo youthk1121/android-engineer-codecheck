@@ -24,12 +24,12 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
 
         val item = args.item
 
-        binding.ownerIconView.load(item.ownerIconUrl);
-        binding.nameView.text = item.name;
-        binding.languageView.text = item.language;
-        binding.starsView.text = "${item.stargazersCount} stars";
-        binding.watchersView.text = "${item.watchersCount} watchers";
-        binding.forksView.text = "${item.forksCount} forks";
-        binding.openIssuesView.text = "${item.openIssuesCount} open issues";
+        binding.ownerIconView.load(item.ownerIconUrl)
+        binding.nameView.text = item.name
+        binding.languageView.text = item.getLanguageText(requireContext())
+        binding.starsView.text = "${item.stargazersCount} stars"
+        binding.watchersView.text = "${item.watchersCount} watchers"
+        binding.forksView.text = "${item.forksCount} forks"
+        binding.openIssuesView.text = "${item.openIssuesCount} open issues"
     }
 }
