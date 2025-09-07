@@ -23,10 +23,13 @@ import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import okio.IOException
+import java.util.Date
 
 class OneFragment : Fragment(R.layout.fragment_one) {
 
     private var searchJob: Job? = null
+
+    private var lastSearchDate: Date? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,6 +59,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
                                 Toast.makeText(context, R.string.search_error_message, Toast.LENGTH_SHORT).show()
                                 return@launch
                             }
+                            lastSearchDate = Date()
                             adapter.submitList(results)
                             if (results.isEmpty()) {
                                 Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT).show()
@@ -76,7 +80,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
 
     fun gotoRepositoryFragment(item: Item) {
         val action = OneFragmentDirections
-            .actionRepositoriesFragmentToRepositoryFragment(item = item)
+            .actionRepositoriesFragmentToRepositoryFragment(item = item, searchDate = lastSearchDate)
         findNavController().navigate(action)
     }
 }
