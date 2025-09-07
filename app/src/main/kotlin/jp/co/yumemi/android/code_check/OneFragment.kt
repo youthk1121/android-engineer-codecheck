@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
+import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
 
 class OneFragment : Fragment(R.layout.fragment_one) {
 
@@ -77,21 +77,21 @@ class CustomAdapter(
     private val itemClickListener: OnItemClickListener,
 ) : ListAdapter<Item, CustomAdapter.ViewHolder>(diffUtil) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class ViewHolder(val binding: LayoutItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface OnItemClickListener {
         fun itemClick(item: Item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item, parent, false)
-        return ViewHolder(view)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = LayoutItemBinding.inflate(layoutInflater, parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.itemView.findViewById<TextView>(R.id.repositoryNameView).apply {
+        holder.binding.repositoryNameView.apply {
             text = item.name
             setOnClickListener {
                 itemClickListener.itemClick(item)
