@@ -9,18 +9,18 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import coil.load
-import jp.co.yumemi.android.code_check.databinding.FragmentTwoBinding
+import jp.co.yumemi.android.code_check.databinding.FragmentDetailBinding
 
-class TwoFragment : Fragment(R.layout.fragment_two) {
+class DetailFragment : Fragment(R.layout.fragment_detail) {
 
-    private val args: TwoFragmentArgs by navArgs()
+    private val args: DetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         Log.d("検索した日時", args.searchDate.toString())
 
-        val binding = FragmentTwoBinding.bind(view)
+        val binding = FragmentDetailBinding.bind(view)
 
         val item = args.item
 
