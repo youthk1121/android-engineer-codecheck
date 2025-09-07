@@ -38,7 +38,7 @@ class OneViewModel(application: Application) : AndroidViewModel(application) {
 
             val jsonBody = JSONObject(response.receive<String>())
 
-            val jsonItems = jsonBody.optJSONArray("items")!!
+            val jsonItems = jsonBody.optJSONArray("items") ?: return@async emptyList()
 
             val items = mutableListOf<Item>()
 
@@ -46,9 +46,9 @@ class OneViewModel(application: Application) : AndroidViewModel(application) {
              * アイテムの個数分ループする
              */
             for (i in 0 until jsonItems.length()) {
-                val jsonItem = jsonItems.optJSONObject(i)!!
+                val jsonItem = jsonItems.optJSONObject(i)
                 val name = jsonItem.optString("full_name")
-                val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
+                val ownerIconUrl = jsonItem.optJSONObject("owner")?.optString("avatar_url")
                 val language = jsonItem.optString("language")
                 val stargazersCount = jsonItem.optLong("stargazers_count")
                 val watchersCount = jsonItem.optLong("watchers_count")
@@ -78,7 +78,7 @@ class OneViewModel(application: Application) : AndroidViewModel(application) {
 @Parcelize
 data class Item(
     val name: String,
-    val ownerIconUrl: String,
+    val ownerIconUrl: String?,
     val language: String,
     val stargazersCount: Long,
     val watchersCount: Long,
