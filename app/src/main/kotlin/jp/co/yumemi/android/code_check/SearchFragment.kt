@@ -58,31 +58,36 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.searchUiState.collect { searchUiState ->
-                    when (searchUiState) {
-                        SearchUiState.Init -> {
-                            adapter.submitList(emptyList())
-                        }
-
-                        SearchUiState.Loading -> {
-                            adapter.submitList(emptyList())
-                        }
-
-                        is SearchUiState.Results -> {
-                            val itemList = searchUiState.itemList
-                            if (itemList.isEmpty()) {
-                                Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT).show()
-                                viewModel.onShowEmptyResult()
-                            } else {
-                                adapter.submitList(itemList)
-                            }
-                        }
-
-                        SearchUiState.Error -> {
-                            Toast.makeText(context, R.string.search_error_message, Toast.LENGTH_SHORT).show()
-                            viewModel.onShowErrorResult()
-                        }
-                    }
+                    binding.applyUiState(searchUiState)
                 }
+            }
+        }
+    }
+
+    private fun FragmentSearchBinding.applyUiState(searchUiState: SearchUiState) {
+        val adapter = recyclerView.adapter as CustomAdapter
+        when (searchUiState) {
+            SearchUiState.Init -> {
+                adapter.submitList(emptyList())
+            }
+
+            SearchUiState.Loading -> {
+                adapter.submitList(emptyList())
+            }
+
+            is SearchUiState.Results -> {
+                val itemList = searchUiState.itemList
+                if (itemList.isEmpty()) {
+                    Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT).show()
+                    viewModel.onShowEmptyResult()
+                } else {
+                    adapter.submitList(itemList)
+                }
+            }
+
+            SearchUiState.Error -> {
+                Toast.makeText(context, R.string.search_error_message, Toast.LENGTH_SHORT).show()
+                viewModel.onShowErrorResult()
             }
         }
     }
