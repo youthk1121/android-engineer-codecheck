@@ -4,11 +4,14 @@
 package jp.co.yumemi.android.code_check
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,8 +20,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
 import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import okio.IOException
 
 class OneFragment : Fragment(R.layout.fragment_one) {
+
+    private var searchJob: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,8 +47,19 @@ class OneFragment : Fragment(R.layout.fragment_one) {
             .setOnEditorActionListener { editText, action, _ ->
                 if (action == EditorInfo.IME_ACTION_SEARCH) {
                     editText.text.toString().let {
-                        viewModel.searchResults(it).apply {
-                            adapter.submitList(this)
+                        searchJob?.cancel()
+                        searchJob = viewLifecycleOwner.lifecycleScope.launch {
+                            val results = try {
+                                viewModel.searchResults(it)
+                            } catch (e: IOException) {
+                                Log.e("検索結果", "検索エラー", e)
+                                Toast.makeText(context, R.string.search_error_message, Toast.LENGTH_SHORT).show()
+                                return@launch
+                            }
+                            adapter.submitList(results)
+                            if (results.isEmpty()) {
+                                Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     return@setOnEditorActionListener true
