@@ -18,14 +18,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
+import jp.co.yumemi.android.code_check.databinding.FragmentSearchBinding
 import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import okio.IOException
 import java.util.Date
 
-class OneFragment : Fragment(R.layout.fragment_one) {
+class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private var searchJob: Job? = null
 
@@ -34,9 +34,9 @@ class OneFragment : Fragment(R.layout.fragment_one) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentOneBinding.bind(view)
+        val binding = FragmentSearchBinding.bind(view)
 
-        val viewModel = OneViewModel()
+        val viewModel = SearchViewModel()
 
         val layoutManager = LinearLayoutManager(context)
         val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
@@ -79,7 +79,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
     }
 
     fun gotoRepositoryFragment(item: Item) {
-        val action = OneFragmentDirections
+        val action = SearchFragmentDirections
             .actionRepositoriesFragmentToRepositoryFragment(item = item, searchDate = lastSearchDate)
         findNavController().navigate(action)
     }

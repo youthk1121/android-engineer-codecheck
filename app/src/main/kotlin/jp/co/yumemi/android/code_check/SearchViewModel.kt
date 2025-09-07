@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import jp.co.yumemi.android.code_check.repository.SearchRepository
 
 /**
- * OneFragment で使う
+ * SearchFragment で使う
  */
-class OneViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     private val searchRepository = SearchRepository()
 
