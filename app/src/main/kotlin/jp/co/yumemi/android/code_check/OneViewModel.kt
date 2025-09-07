@@ -3,8 +3,10 @@
  */
 package jp.co.yumemi.android.code_check
 
+import android.app.Application
 import android.content.Context
 import android.os.Parcelable
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -22,9 +24,7 @@ import java.util.*
 /**
  * OneFragment で使う
  */
-class OneViewModel(
-    val context: Context
-) : ViewModel() {
+class OneViewModel(application: Application) : AndroidViewModel(application) {
 
     // 検索結果
     fun searchResults(inputText: String): List<Item> = runBlocking {
@@ -59,7 +59,7 @@ class OneViewModel(
                     Item(
                         name = name,
                         ownerIconUrl = ownerIconUrl,
-                        language = context.getString(R.string.written_language, language),
+                        language = getApplication<Application>().getString(R.string.written_language, language),
                         stargazersCount = stargazersCount,
                         watchersCount = watchersCount,
                         forksCount = forksCount,
