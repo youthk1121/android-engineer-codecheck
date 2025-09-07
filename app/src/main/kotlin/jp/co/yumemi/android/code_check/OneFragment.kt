@@ -4,10 +4,12 @@
 package jp.co.yumemi.android.code_check
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,6 +22,7 @@ import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
 import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okio.IOException
 
 class OneFragment : Fragment(R.layout.fragment_one) {
 
@@ -46,8 +49,16 @@ class OneFragment : Fragment(R.layout.fragment_one) {
                     editText.text.toString().let {
                         searchJob?.cancel()
                         searchJob = viewLifecycleOwner.lifecycleScope.launch {
-                            viewModel.searchResults(it).apply {
-                                adapter.submitList(this)
+                            val results = try {
+                                viewModel.searchResults(it)
+                            } catch (e: IOException) {
+                                Log.e("検索結果", "検索エラー", e)
+                                Toast.makeText(context, R.string.search_error_message, Toast.LENGTH_SHORT).show()
+                                return@launch
+                            }
+                            adapter.submitList(results)
+                            if (results.isEmpty()) {
+                                Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
