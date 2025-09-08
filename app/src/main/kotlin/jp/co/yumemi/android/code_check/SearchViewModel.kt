@@ -6,7 +6,7 @@ package jp.co.yumemi.android.code_check
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import jp.co.yumemi.android.code_check.repository.SearchRepository
+import jp.co.yumemi.android.code_check.repository.GitHubRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,7 @@ import java.util.Date
  */
 class SearchViewModel : ViewModel() {
 
-    private val searchRepository = SearchRepository()
+    private val gitHubRepository = GitHubRepository()
 
     private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
     val searchUiState = _searchUiState.asStateFlow()
@@ -31,7 +31,7 @@ class SearchViewModel : ViewModel() {
         _searchUiState.value = SearchUiState.Loading
         searchJob = viewModelScope.launch {
             val responseList = try {
-                searchRepository.search(query)
+                gitHubRepository.search(query)
             } catch (e: IOException) {
                 Log.e("検索結果", "検索エラー", e)
                 _searchUiState.value = SearchUiState.Error

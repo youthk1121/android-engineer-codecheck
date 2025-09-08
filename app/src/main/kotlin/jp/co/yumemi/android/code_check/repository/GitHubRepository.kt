@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class SearchRepository {
+class GitHubRepository {
     private val serializer = Json { ignoreUnknownKeys = true }
 
     suspend fun search(query: String): List<ItemResponse> {
