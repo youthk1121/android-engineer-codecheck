@@ -18,18 +18,18 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("検索した日時", args.item.fetchDate.toString())
+        Log.d("検索した日時", args.searchDate.toString())
 
         val binding = FragmentDetailBinding.bind(view)
 
-        val item = args.item
+        val detail = args.detail
 
-        binding.ownerIconView.load(item.ownerIconUrl)
-        binding.nameView.text = item.name
-        binding.languageView.text = item.getLanguageText(requireContext())
-        binding.starsView.text = "${item.stargazersCount} stars"
-        binding.watchersView.text = "${item.watchersCount} watchers"
-        binding.forksView.text = "${item.forksCount} forks"
-        binding.openIssuesView.text = "${item.openIssuesCount} open issues"
+        binding.ownerIconView.load(detail.ownerIconUrl)
+        binding.nameView.text = detail.name
+        binding.languageView.text = detail.getLanguageText(requireContext())
+        binding.starsView.text = "${detail.stargazersCount} stars"
+        binding.watchersView.text = "${detail.watchersCount} watchers"
+        binding.forksView.text = "${detail.forksCount} forks"
+        binding.openIssuesView.text = "${detail.openIssuesCount} open issues"
     }
 }

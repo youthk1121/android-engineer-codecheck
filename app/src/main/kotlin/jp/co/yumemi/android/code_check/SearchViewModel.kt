@@ -41,12 +41,15 @@ class SearchViewModel : ViewModel() {
             val items = responseList.map { responseItem ->
                 Item(
                     name = responseItem.fullName,
-                    ownerIconUrl = responseItem.owner.avatarUrl,
-                    language = responseItem.language.orEmpty(),
-                    stargazersCount = responseItem.stargazersCount,
-                    watchersCount = responseItem.watchersCount,
-                    forksCount = responseItem.forksCount,
-                    openIssuesCount = responseItem.openIssuesCount,
+                    detail = RepositoryDetail(
+                        name = responseItem.fullName,
+                        ownerIconUrl = responseItem.owner.avatarUrl,
+                        language = responseItem.language.orEmpty(),
+                        stargazersCount = responseItem.stargazersCount,
+                        watchersCount = responseItem.watchersCount,
+                        forksCount = responseItem.forksCount,
+                        openIssuesCount = responseItem.openIssuesCount,
+                    ),
                     fetchDate = fetchDate
                 )
             }
