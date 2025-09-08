@@ -7,10 +7,15 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
-import org.json.JSONObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
-class SearchRepository() {
-    suspend fun search(query: String): List<SearchResponse> {
+class SearchRepository {
+    private val serializer = Json { ignoreUnknownKeys = true }
+
+    suspend fun search(query: String): List<ItemResponse> {
         val client = HttpClient(Android)
 
         val response: HttpResponse = client.get(SEARCH_URL) {
@@ -18,39 +23,9 @@ class SearchRepository() {
             parameter(QUERY_PARAM_NAME, query)
         }
 
-        val jsonBody = JSONObject(response.receive<String>())
-
-        val jsonItems = jsonBody.optJSONArray("items") ?: return emptyList()
-
-        val responseList = mutableListOf<SearchResponse>()
-
-        /**
-         * アイテムの個数分ループする
-         */
-        for (i in 0 until jsonItems.length()) {
-            val jsonItem = jsonItems.optJSONObject(i)
-            val name = jsonItem.optString("full_name")
-            val ownerIconUrl = jsonItem.optJSONObject("owner")?.optString("avatar_url")
-            val language = jsonItem.optString("language")
-            val stargazersCount = jsonItem.optLong("stargazers_count")
-            val watchersCount = jsonItem.optLong("watchers_count")
-            val forksCount = jsonItem.optLong("forks_count")
-            val openIssuesCount = jsonItem.optLong("open_issues_count")
-
-            responseList.add(
-                SearchResponse(
-                    name = name,
-                    ownerIconUrl = ownerIconUrl,
-                    language = language,
-                    stargazersCount = stargazersCount,
-                    watchersCount = watchersCount,
-                    forksCount = forksCount,
-                    openIssuesCount = openIssuesCount
-                )
-            )
-        }
-
-        return responseList.toList()
+        val json = response.receive<String>()
+        val searchResponse = serializer.decodeFromString<SearchResponse>(json)
+        return searchResponse.items
     }
 
     companion object {
@@ -61,12 +36,32 @@ class SearchRepository() {
     }
 }
 
+@Serializable
 data class SearchResponse(
-    val name: String,
-    val ownerIconUrl: String?,
-    val language: String,
+    @SerialName("items")
+    val items: List<ItemResponse>
+)
+
+@Serializable
+data class ItemResponse(
+    @SerialName("full_name")
+    val fullName: String,
+    @SerialName("owner")
+    val owner: OwnerResponse,
+    @SerialName("language")
+    val language: String?,
+    @SerialName("stargazers_count")
     val stargazersCount: Long,
+    @SerialName("watchers_count")
     val watchersCount: Long,
+    @SerialName("forks_count")
     val forksCount: Long,
+    @SerialName("open_issues_count")
     val openIssuesCount: Long,
+)
+
+@Serializable
+data class OwnerResponse(
+    @SerialName("avatar_url")
+    val avatarUrl: String
 )

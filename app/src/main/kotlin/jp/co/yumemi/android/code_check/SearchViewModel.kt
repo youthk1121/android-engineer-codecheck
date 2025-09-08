@@ -40,9 +40,9 @@ class SearchViewModel : ViewModel() {
             val fetchDate = Date()
             val items = responseList.map { responseItem ->
                 Item(
-                    name = responseItem.name,
-                    ownerIconUrl = responseItem.ownerIconUrl,
-                    language = responseItem.language,
+                    name = responseItem.fullName,
+                    ownerIconUrl = responseItem.owner.avatarUrl,
+                    language = responseItem.language.orEmpty(),
                     stargazersCount = responseItem.stargazersCount,
                     watchersCount = responseItem.watchersCount,
                     forksCount = responseItem.forksCount,
