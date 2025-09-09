@@ -5,4 +5,9 @@
 
     <string name="search_error_message">通信エラー</string>
     <string name="search_empty_message">リポジトリが見つかりませんでした</string>
+
+    <string name="detail_stars_format">%1$d stars</string>
+    <string name="detail_watchers_format">%1$d watchers</string>
+    <string name="detail_forks_format">%1$d forks</string>
+    <string name="detail_open_issues_format">%1$d open issues</string>
 </resources>

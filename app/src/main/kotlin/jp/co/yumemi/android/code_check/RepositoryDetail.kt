@@ -9,12 +9,24 @@ data class RepositoryDetail(
     val name: String,
     val ownerIconUrl: String?,
     private val language: String,
-    val stargazersCount: Long,
-    val watchersCount: Long,
-    val forksCount: Long,
-    val openIssuesCount: Long
+    private val stargazersCount: Long,
+    private val watchersCount: Long,
+    private val forksCount: Long,
+    private val openIssuesCount: Long
 ) : Parcelable {
     fun getLanguageText(context: Context): String {
         return context.getString(R.string.written_language, language)
+    }
+    fun getStarsText(context: Context): String {
+        return context.getString(R.string.detail_stars_format, stargazersCount)
+    }
+    fun getWatchersText(context: Context): String {
+        return context.getString(R.string.detail_watchers_format, watchersCount)
+    }
+    fun getForksText(context: Context): String {
+        return context.getString(R.string.detail_forks_format, forksCount)
+    }
+    fun getOpenIssuesText(context: Context): String {
+        return context.getString(R.string.detail_open_issues_format, openIssuesCount)
     }
 }

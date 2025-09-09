@@ -34,10 +34,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.ownerIconView.load(detail.ownerIconUrl)
             binding.nameView.text = detail.name
             binding.languageView.text = detail.getLanguageText(requireContext())
-            binding.starsView.text = "${detail.stargazersCount} stars"
-            binding.watchersView.text = "${detail.watchersCount} watchers"
-            binding.forksView.text = "${detail.forksCount} forks"
-            binding.openIssuesView.text = "${detail.openIssuesCount} open issues"
+            binding.starsView.text = detail.getStarsText(requireContext())
+            binding.watchersView.text = detail.getWatchersText(requireContext())
+            binding.forksView.text = detail.getForksText(requireContext())
+            binding.openIssuesView.text = detail.getOpenIssuesText(requireContext())
         }.launchRepeatingOnLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED)
     }
 }
