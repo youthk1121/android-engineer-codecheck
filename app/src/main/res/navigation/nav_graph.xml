@@ -21,12 +21,11 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="item"
-            app:argType="jp.co.yumemi.android.code_check.Item" />
+            android:name="detail"
+            app:argType="jp.co.yumemi.android.code_check.RepositoryDetail" />
         <argument
             android:name="searchDate"
-            app:argType="java.util.Date"
-            app:nullable="true" />
+            app:argType="java.util.Date" />
     </fragment>
 
 </navigation>

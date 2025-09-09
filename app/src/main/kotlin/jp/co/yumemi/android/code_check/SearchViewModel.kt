@@ -3,28 +3,77 @@
  */
 package jp.co.yumemi.android.code_check
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import jp.co.yumemi.android.code_check.repository.SearchRepository
+import androidx.lifecycle.viewModelScope
+import jp.co.yumemi.android.code_check.repository.GitHubRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import okio.IOException
+import java.util.Date
 
 /**
  * SearchFragment で使う
  */
 class SearchViewModel : ViewModel() {
 
-    private val searchRepository = SearchRepository()
+    private val gitHubRepository = GitHubRepository()
 
-    // 検索結果
-    suspend fun searchResults(inputText: String): List<Item> {
-        return searchRepository.search(inputText).map { responseItem ->
-            Item(
-                name = responseItem.name,
-                ownerIconUrl = responseItem.ownerIconUrl,
-                language = responseItem.language,
-                stargazersCount = responseItem.stargazersCount,
-                watchersCount = responseItem.watchersCount,
-                forksCount = responseItem.forksCount,
-                openIssuesCount = responseItem.openIssuesCount,
-            )
+    private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
+    val searchUiState = _searchUiState.asStateFlow()
+
+    private var searchJob: Job? = null
+
+    fun onImeSearch(query: String) {
+        searchJob?.cancel()
+        _searchUiState.value = SearchUiState.Loading
+        searchJob = viewModelScope.launch {
+            val responseList = try {
+                gitHubRepository.search(query)
+            } catch (e: IOException) {
+                Log.e("検索結果", "検索エラー", e)
+                _searchUiState.value = SearchUiState.Error
+                return@launch
+            }
+            val fetchDate = Date()
+            val items = responseList.map { responseItem ->
+                Item(
+                    name = responseItem.fullName,
+                    detail = RepositoryDetail(
+                        name = responseItem.fullName,
+                        ownerIconUrl = responseItem.owner.avatarUrl,
+                        language = responseItem.language.orEmpty(),
+                        stargazersCount = responseItem.stargazersCount,
+                        watchersCount = responseItem.watchersCount,
+                        forksCount = responseItem.forksCount,
+                        openIssuesCount = responseItem.openIssuesCount,
+                    ),
+                    fetchDate = fetchDate
+                )
+            }
+            _searchUiState.value = SearchUiState.Results(items)
         }
     }
+
+    fun onShowEmptyResult() {
+        _searchUiState.value = SearchUiState.Init
+    }
+
+    fun onShowErrorResult() {
+        _searchUiState.value = SearchUiState.Init
+    }
+}
+
+sealed interface SearchUiState {
+    object Init: SearchUiState
+
+    object Loading : SearchUiState
+
+    data class Results(
+        val itemList: List<Item>
+    ) : SearchUiState
+
+    object Error: SearchUiState
 }
