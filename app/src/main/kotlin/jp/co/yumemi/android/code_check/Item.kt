@@ -7,6 +7,6 @@ import java.util.Date
 @Parcelize
 data class Item(
     val name: String,
-    val detail: RepositoryDetail,
+    val url: String,
     val fetchDate: Date
 ) : Parcelable

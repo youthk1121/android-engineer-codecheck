@@ -9,13 +9,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.navArgs
 import coil.load
 import jp.co.yumemi.android.code_check.databinding.FragmentDetailBinding
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
@@ -26,9 +22,20 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         Log.d("検索した日時", viewModel.searchDate.toString())
 
+        viewModel.onViewCreated()
+
         val binding = FragmentDetailBinding.bind(view)
 
         viewModel.uiState.onEach { state ->
+            applyState(state, binding)
+        }.launchRepeatingOnLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED)
+    }
+
+    private fun applyState(
+        state: DetailUiState,
+        binding: FragmentDetailBinding
+    ) {
+        if (state is DetailUiState.Success) {
             val detail = state.detail
 
             binding.ownerIconView.load(detail.ownerIconUrl)
@@ -38,6 +45,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.watchersView.text = detail.getWatchersText(requireContext())
             binding.forksView.text = detail.getForksText(requireContext())
             binding.openIssuesView.text = detail.getOpenIssuesText(requireContext())
-        }.launchRepeatingOnLifecycle(viewLifecycleOwner, Lifecycle.State.STARTED)
+        }
     }
 }

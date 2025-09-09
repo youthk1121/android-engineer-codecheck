@@ -15,6 +15,9 @@ data class RepositoryDetail(
     private val openIssuesCount: Long
 ) : Parcelable {
     fun getLanguageText(context: Context): String {
+        if (language.isEmpty()) {
+            return ""
+        }
         return context.getString(R.string.written_language, language)
     }
     fun getStarsText(context: Context): String {
