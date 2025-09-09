@@ -21,8 +21,8 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_detail">
         <argument
-            android:name="detail"
-            app:argType="jp.co.yumemi.android.code_check.RepositoryDetail" />
+            android:name="url"
+            app:argType="string" />
         <argument
             android:name="searchDate"
             app:argType="java.util.Date" />

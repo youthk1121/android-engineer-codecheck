@@ -26,6 +26,18 @@ class GitHubRepository {
         return searchResponse.items
     }
 
+    suspend fun detail(url: String): DetailResponse {
+        val client = HttpClient(Android)
+
+        val response: HttpResponse = client.get(url) {
+            header(ACCEPT_HEADER_NAME, ACCEPT_HEADER_VALUE)
+        }
+
+        val json = response.receive<String>()
+        val detailResponse = serializer.decodeFromString<DetailResponse>(json)
+        return detailResponse
+    }
+
     companion object {
         private const val SEARCH_URL = "https://api.github.com/search/repositories"
         private const val ACCEPT_HEADER_NAME = "Accept"
