@@ -5,7 +5,10 @@ package jp.co.yumemi.android.code_check
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import jp.co.yumemi.android.code_check.repository.GitHubRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +20,10 @@ import java.util.Date
 /**
  * SearchFragment で使う
  */
-class SearchViewModel : ViewModel() {
-
-    private val gitHubRepository = GitHubRepository()
+class SearchViewModel(
+    private val gitHubRepository: GitHubRepository,
+    private val getCurrentDate: () -> Date = { Date() }
+) : ViewModel() {
 
     private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Init)
     val searchUiState = _searchUiState.asStateFlow()
@@ -37,7 +41,7 @@ class SearchViewModel : ViewModel() {
                 _searchUiState.value = SearchUiState.Error
                 return@launch
             }
-            val fetchDate = Date()
+            val fetchDate = getCurrentDate()
             val items = responseList.map { responseItem ->
                 Item(
                     name = responseItem.fullName,
@@ -56,10 +60,22 @@ class SearchViewModel : ViewModel() {
     fun onShowErrorResult() {
         _searchUiState.value = SearchUiState.Init
     }
+
+    companion object {
+        fun provideFactory(
+            gitHubRepository: GitHubRepository
+        ): ViewModelProvider.Factory {
+            return viewModelFactory {
+                initializer {
+                    SearchViewModel(gitHubRepository)
+                }
+            }
+        }
+    }
 }
 
 sealed interface SearchUiState {
-    object Init: SearchUiState
+    object Init : SearchUiState
 
     object Loading : SearchUiState
 
@@ -67,5 +83,5 @@ sealed interface SearchUiState {
         val itemList: List<Item>
     ) : SearchUiState
 
-    object Error: SearchUiState
+    object Error : SearchUiState
 }

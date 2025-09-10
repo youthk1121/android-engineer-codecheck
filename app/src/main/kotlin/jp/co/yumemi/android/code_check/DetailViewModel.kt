@@ -1,8 +1,11 @@
 package jp.co.yumemi.android.code_check
 
+import android.os.Bundle
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedStateRegistryOwner
 import jp.co.yumemi.android.code_check.repository.GitHubRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,10 +13,9 @@ import kotlinx.coroutines.launch
 import okio.IOException
 
 class DetailViewModel(
+    private val gitHubRepository: GitHubRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
-    private val gitHubRepository = GitHubRepository()
 
     private val args = DetailFragmentArgs.fromSavedStateHandle(savedStateHandle)
 
@@ -50,6 +52,23 @@ class DetailViewModel(
         _uiState.value = DetailUiState.Success(detail)
     }
 
+    companion object {
+        fun provideFactory(
+            gitHubRepository: GitHubRepository,
+            owner: SavedStateRegistryOwner,
+            defaultArgs: Bundle? = null
+        ) = object : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                key: String,
+                modelClass: Class<T>,
+                handle: SavedStateHandle
+            ): T {
+                return DetailViewModel(gitHubRepository, handle) as T
+            }
+        }
+
+    }
 }
 
 sealed interface DetailUiState {

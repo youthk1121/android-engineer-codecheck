@@ -22,11 +22,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.databinding.FragmentSearchBinding
 import jp.co.yumemi.android.code_check.databinding.LayoutItemBinding
+import jp.co.yumemi.android.code_check.repository.GitHubRepository
+import jp.co.yumemi.android.code_check.repository.GitHubRepositoryImpl
 import kotlinx.coroutines.launch
 
-class SearchFragment : Fragment(R.layout.fragment_search) {
+class SearchFragment @JvmOverloads constructor(
+    gitHubRepository: GitHubRepository = GitHubRepositoryImpl()
+) : Fragment(R.layout.fragment_search) {
 
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by viewModels(factoryProducer = {
+        SearchViewModel.provideFactory(gitHubRepository)
+    })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,7 +84,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             is SearchUiState.Results -> {
                 val itemList = searchUiState.itemList
                 if (itemList.isEmpty()) {
-                    Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.search_empty_message, Toast.LENGTH_SHORT)
+                        .show()
                     viewModel.onShowEmptyResult()
                 } else {
                     adapter.submitList(itemList)
@@ -94,7 +101,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     fun gotoRepositoryFragment(item: Item) {
         val action = SearchFragmentDirections
-            .actionRepositoriesFragmentToRepositoryFragment(url = item.url, searchDate = item.fetchDate)
+            .actionRepositoriesFragmentToRepositoryFragment(
+                url = item.url,
+                searchDate = item.fetchDate
+            )
         findNavController().navigate(action)
     }
 }

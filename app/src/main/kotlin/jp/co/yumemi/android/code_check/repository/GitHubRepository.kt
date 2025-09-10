@@ -10,10 +10,16 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class GitHubRepository {
+interface GitHubRepository {
+    suspend fun search(query: String): List<ItemResponse>
+
+    suspend fun detail(url: String): DetailResponse
+}
+
+class GitHubRepositoryImpl : GitHubRepository {
     private val serializer = Json { ignoreUnknownKeys = true }
 
-    suspend fun search(query: String): List<ItemResponse> {
+    override suspend fun search(query: String): List<ItemResponse> {
         val client = HttpClient(Android)
 
         val response: HttpResponse = client.get(SEARCH_URL) {
@@ -26,7 +32,7 @@ class GitHubRepository {
         return searchResponse.items
     }
 
-    suspend fun detail(url: String): DetailResponse {
+    override suspend fun detail(url: String): DetailResponse {
         val client = HttpClient(Android)
 
         val response: HttpResponse = client.get(url) {

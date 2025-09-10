@@ -11,11 +11,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import coil.load
 import jp.co.yumemi.android.code_check.databinding.FragmentDetailBinding
+import jp.co.yumemi.android.code_check.repository.GitHubRepository
+import jp.co.yumemi.android.code_check.repository.GitHubRepositoryImpl
 import kotlinx.coroutines.flow.onEach
 
-class DetailFragment : Fragment(R.layout.fragment_detail) {
+class DetailFragment @JvmOverloads constructor(
+    gitHubRepository: GitHubRepository = GitHubRepositoryImpl()
+) : Fragment(R.layout.fragment_detail) {
 
-    private val viewModel: DetailViewModel by viewModels()
+    private val viewModel: DetailViewModel by viewModels(factoryProducer = {
+        DetailViewModel.provideFactory(gitHubRepository, this, arguments)
+    })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
